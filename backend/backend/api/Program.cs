@@ -1,3 +1,7 @@
+using api.Dtos;
+using api.Dtos.Mappers;
+using api.Dtos.model;
+using Domain.model;
 using Microsoft.EntityFrameworkCore;
 
 namespace api;
@@ -9,9 +13,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddAuthorization();
-
         builder.Services.AddDbContext<KanjiDbContext>();
-
+        builder.Services.AddScoped<IGenericMapper<UserDto, User>, UserMapper>();
+        builder.Services.AddScoped<IGenericMapper<CardDto, Card>, CardMapper>();
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
 

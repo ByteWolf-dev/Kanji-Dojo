@@ -14,8 +14,14 @@ public class Program
 
         builder.Services.AddAuthorization();
         builder.Services.AddDbContext<KanjiDbContext>();
+        
         builder.Services.AddScoped<IGenericMapper<UserDto, User>, UserMapper>();
         builder.Services.AddScoped<IGenericMapper<CardDto, Card>, CardMapper>();
+        builder.Services.AddScoped<IGenericMapper<ItemDto, Item>, ItemMapper>();
+        builder.Services.AddScoped<IGenericMapper<ItemReadingDto, ItemReading>, ItemReadingMapper>();
+        builder.Services.AddScoped<IGenericMapper<ReviewDto, Review>, ReviewMapper>();
+        
+        
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
 

@@ -1,12 +1,12 @@
 ﻿using api.Dtos;
-using api.Dtos.Mappers;
 using api.Dtos.model;
 using Domain.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace api;
+namespace api.controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase

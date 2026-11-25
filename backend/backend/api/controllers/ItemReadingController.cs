@@ -1,10 +1,12 @@
 ﻿using api.Dtos;
 using api.Dtos.model;
 using Domain.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api;
+namespace api.controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ItemReadingController : ControllerBase

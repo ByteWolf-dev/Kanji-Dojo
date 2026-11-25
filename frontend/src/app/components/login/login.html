@@ -1,0 +1,36 @@
+<h1>Kanji Dojo</h1>
+
+<form #loginForm="ngForm" (ngSubmit)="login()">
+
+  <label>Username</label>
+
+  <input
+    type="text"
+    name="username"
+    [(ngModel)]="credentials.name"
+    autocomplete="username"
+    required
+  />
+
+  <label>Password</label>
+
+  <input
+    type="password"
+    name="password"
+    [(ngModel)]="credentials.password"
+    autocomplete="current-password"
+    required
+  />
+
+  @if (errorMessage()) {
+    <p>{{ errorMessage() }}</p>
+  }
+
+  <button
+    type="submit"
+    [disabled]="isLoading() || loginForm.invalid"
+  >
+    {{ isLoading() ? 'Logging in...' : 'Login' }}
+  </button>
+
+</form>

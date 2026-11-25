@@ -1,10 +1,13 @@
 ﻿using api.Dtos;
 using api.Dtos.model;
+using Core;
 using Domain.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api;
+namespace api.controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ReviewController : ControllerBase
@@ -22,5 +25,27 @@ public class ReviewController : ControllerBase
     public List<ReviewDto> Get()
     {
         return _kanjiDbContext.Reviews.Select(_reviewMapper.ToDto).ToList();
+    }
+
+    [HttpPost]
+    public ActionResult<ReviewDto> ReviewCard([FromBody] ReviewDto reviewDto)
+    {
+        try
+        {
+            Review dbReview = _reviewMapper.ToEntity(reviewDto, _kanjiDbContext);
+            Card? dbCard = _kanjiDbContext.Cards.FirstOrDefault(c => c.Id == dbReview.CardId);
+
+            if (dbCard == null) return BadRequest("The card which the review was performed on does not exist.");
+
+            dbReview.Card = dbCard;
+        
+            SchedulingAlgorithms.Review(dbCard, dbReview.Grade);
+            _kanjiDbContext.SaveChanges();
+            return Ok(dbReview);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

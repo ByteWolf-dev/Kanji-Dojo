@@ -1,9 +1,10 @@
-﻿using api.Dtos;
-using Domain.model;
+﻿using Domain.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api;
+namespace api.controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class BeltController : ControllerBase

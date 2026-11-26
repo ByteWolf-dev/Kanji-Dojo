@@ -1,0 +1,49 @@
+@if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+} @else if (errorMessage()) {
+    <mat-card class="boss">
+        <mat-card-content>
+            <p class="error">{{ errorMessage() }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <a mat-button routerLink="/dashboard">Back to the dojo</a>
+        </mat-card-actions>
+    </mat-card>
+} @else if (result(); as result) {
+    <mat-card class="boss">
+        <mat-card-content>
+            @if (result.passed) {
+                <h2>Victory! 🥋</h2>
+                <p>You beat the boss and earned your next belt.</p>
+            } @else {
+                <h2>Defeated</h2>
+                <p>Train some more and try again.</p>
+            }
+            <p class="score">{{ result.correct }} / {{ result.total }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <a mat-flat-button routerLink="/dashboard">Back to the dojo</a>
+        </mat-card-actions>
+    </mat-card>
+} @else {
+    <mat-progress-bar mode="determinate" [value]="progress()" />
+
+    <mat-card class="boss">
+        <mat-card-content>
+            <p class="counter">Boss fight · {{ index() + 1 }} / {{ questions().length }}</p>
+            <p class="hint">Type the reading. You need 80% to pass.</p>
+            <div class="question">{{ question().character }}</div>
+
+            <form (submit)="$event.preventDefault(); next()">
+                <mat-form-field class="answer" appearance="outline">
+                    <mat-label>Answer</mat-label>
+                    <input matInput autocomplete="off" [value]="answer()" (input)="onInput($event)" />
+                </mat-form-field>
+
+                <button mat-flat-button type="submit" [disabled]="!answer().trim()">
+                    {{ index() + 1 === questions().length ? 'Finish' : 'Next' }}
+                </button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+}

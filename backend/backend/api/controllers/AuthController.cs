@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using api.Dtos.model;
+using Core;
 using Domain.model;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
@@ -117,10 +118,14 @@ public class AuthController : ControllerBase
         if (exists)
             return Conflict("Username already exists");
 
+        var firstBelt = await _context.Belts
+            .OrderBy(b => b.Rank)
+            .FirstAsync();
+
         var user = new User
         {
             Name = dto.Name,
-            BeltId = 1
+            BeltId = firstBelt.Id
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(
@@ -129,6 +134,14 @@ public class AuthController : ControllerBase
         );
 
         _context.Users.Add(user);
+
+        await _context.SaveChangesAsync();
+
+        var items = await _context.Items
+            .Where(i => i.BeltId == firstBelt.Id)
+            .ToListAsync();
+
+        _context.Cards.AddRange(CardFactory.CreateCards(user.Id, items, DateTime.UtcNow));
 
         await _context.SaveChangesAsync();
 

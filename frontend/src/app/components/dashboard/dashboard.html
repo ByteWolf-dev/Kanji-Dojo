@@ -4,17 +4,63 @@
     <button mat-button (click)="logout()">Logout</button>
 </mat-toolbar>
 
-<div class="content">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>Reviews</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <p class="due">{{ cards().length }}</p>
-            <p>cards due for review</p>
-        </mat-card-content>
-        <mat-card-actions>
-            <a mat-flat-button routerLink="/review" [disabled]="!cards().length">Start review</a>
-        </mat-card-actions>
-    </mat-card>
-</div>
+@if (progress(); as progress) {
+    <div class="content">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ progress.beltName }} belt</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="belt" [style.background]="progress.beltColor"></div>
+                @if (progress.nextBeltName) {
+                    <p>Score {{ progress.score }} / {{ progress.nextBeltRequiredScore }} for the {{ progress.nextBeltName }} belt</p>
+                    <mat-progress-bar mode="determinate" [value]="scorePercent(progress)" />
+                } @else {
+                    <p>Highest belt reached. Score {{ progress.score }}</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Streak</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p class="big">{{ progress.currentStreak }} 🔥</p>
+                <p>{{ progress.currentStreak === 1 ? 'day' : 'days' }} in a row · best {{ progress.longestStreak }}</p>
+                <p>{{ progress.reviewedToday }} reviews today</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Reviews</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p class="big">{{ progress.dueCount }}</p>
+                <p>cards due for review</p>
+            </mat-card-content>
+            <mat-card-actions>
+                <a mat-flat-button routerLink="/review" [disabled]="!progress.dueCount">Start review</a>
+            </mat-card-actions>
+        </mat-card>
+
+        @if (progress.nextBeltName) {
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Boss fight</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    @if (progress.canFightBoss) {
+                        <p>You are ready! Beat the boss to earn the {{ progress.nextBeltName }} belt.</p>
+                    } @else {
+                        <p>Reach a score of {{ progress.nextBeltRequiredScore }} to challenge the boss.</p>
+                    }
+                </mat-card-content>
+                <mat-card-actions>
+                    <a mat-flat-button routerLink="/boss" [disabled]="!progress.canFightBoss">Fight</a>
+                </mat-card-actions>
+            </mat-card>
+        }
+    </div>
+}

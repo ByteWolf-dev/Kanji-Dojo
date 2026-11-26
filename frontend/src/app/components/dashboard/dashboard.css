@@ -11,7 +11,14 @@
     padding: 0 16px;
 }
 
-.due {
+.big {
     font-size: 48px;
     margin: 8px 0 0;
+}
+
+.belt {
+    height: 24px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 12px 0;
 }

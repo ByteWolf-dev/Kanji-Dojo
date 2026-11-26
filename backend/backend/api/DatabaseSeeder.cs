@@ -1,4 +1,5 @@
-﻿using Domain.model;
+﻿using Core;
+using Domain.model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,28 +25,28 @@ public static class DatabaseSeeder
         {
             new Belt
             {
-                Name = "Ace",
+                Name = "White",
                 Rank = Rank.Ace,
                 ColorHex = "#FFFFFF",
                 RequiredScore = 0
             },
             new Belt
             {
-                Name = "Two",
+                Name = "Yellow",
                 Rank = Rank.Two,
                 ColorHex = "#FACC15",
                 RequiredScore = 100
             },
             new Belt
             {
-                Name = "Three",
+                Name = "Green",
                 Rank = Rank.Three,
                 ColorHex = "#22C55E",
                 RequiredScore = 300
             },
             new Belt
             {
-                Name = "Four",
+                Name = "Blue",
                 Rank = Rank.Four,
                 ColorHex = "#2563EB",
                 RequiredScore = 600
@@ -230,33 +231,19 @@ public static class DatabaseSeeder
 
         var cards = new List<Card>();
 
+        var beltRanks = belts.ToDictionary(b => b.Id, b => b.Rank);
+
         foreach (var user in users)
         {
-            var availableCards = items
-                .SelectMany(item =>
-                    Enum.GetValues<CardType>()
-                        .Where(type =>
-                            type != CardType.Meaning ||
-                            item.CharacterType == CharacterType.Kanji)
-                        .Select(type => new
-                        {
-                            Item = item,
-                            Type = type
-                        }))
-                .OrderBy(_ => random.Next())
-                .Take(150);
+            var unlockedItems = items
+                .Where(i => beltRanks[i.BeltId] <= beltRanks[user.BeltId]);
 
-            foreach (var entry in availableCards)
-                cards.Add(new Card
-                {
-                    UserId = user.Id,
-                    ItemId = entry.Item.Id,
-                    CardType = entry.Type,
-                    EaseFactor = 2.5,
-                    IntervalDays = 0,
-                    Repetitions = 0,
-                    DueAt = now.AddDays(-random.Next(0, 31))
-                });
+            var userCards = CardFactory.CreateCards(user.Id, unlockedItems, now);
+
+            foreach (var card in userCards)
+                card.DueAt = now.AddDays(-random.Next(0, 31));
+
+            cards.AddRange(userCards);
         }
 
         db.Cards.AddRange(cards);

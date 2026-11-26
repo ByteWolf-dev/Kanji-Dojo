@@ -4,6 +4,7 @@ using api.Dtos.model;
 using Domain.model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,14 @@ public class Program
             options.Cookie.HttpOnly = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.SameSite = SameSiteMode.Lax;
+        });
+
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+            // the api is only reachable through the nginx container
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
         });
 
         builder.Services.AddControllers();
@@ -114,6 +123,8 @@ public class Program
             if (!await db.Belts.AnyAsync())
                 await DatabaseSeeder.SeedAsync(db);
         }
+
+        app.UseForwardedHeaders();
 
         if (app.Environment.IsDevelopment())
         {

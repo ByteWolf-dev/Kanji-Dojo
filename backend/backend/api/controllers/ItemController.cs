@@ -8,17 +8,17 @@ namespace api.controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ItemController : ControllerBase
 {
-    private KanjiDbContext _kanjiDbContext { get; set; }
-    private IGenericMapper<ItemDto, Item> _itemMapper { get; set; }
-
     public ItemController(KanjiDbContext kanjiDbContext, IGenericMapper<ItemDto, Item> itemMapper)
     {
         _kanjiDbContext = kanjiDbContext;
         _itemMapper = itemMapper;
     }
+
+    private KanjiDbContext _kanjiDbContext { get; }
+    private IGenericMapper<ItemDto, Item> _itemMapper { get; }
 
     [HttpGet]
     public List<ItemDto> Get()

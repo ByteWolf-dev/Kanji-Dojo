@@ -4,7 +4,7 @@ namespace Core;
 
 public class SchedulingAlgorithms
 {
-    public static void Review(Card card, int quality)
+    public static void Review(Card card, int quality, DateTime? now = null)
     {
         if (quality < 0 || quality > 5)
             throw new ArgumentOutOfRangeException(nameof(quality));
@@ -33,7 +33,9 @@ public class SchedulingAlgorithms
 
         card.EaseFactor = Math.Max(1.3, card.EaseFactor);
 
-        card.DueAt = DateTime.UtcNow
-            .AddDays(card.IntervalDays);
+        var reviewedAt = now ?? DateTime.UtcNow;
+
+        card.LastReviewAt = reviewedAt;
+        card.DueAt = reviewedAt.AddDays(card.IntervalDays);
     }
 }

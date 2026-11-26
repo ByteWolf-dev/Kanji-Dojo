@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="api/api.csproj" />
-  <Project Path="Core/Core.csproj" />
-  <Project Path="Domain/Domain.csproj" />
-  <Project Path="Tests/Tests.csproj" />
+    <Project Path="api/api.csproj"/>
+    <Project Path="Core/Core.csproj"/>
+    <Project Path="Domain/Domain.csproj"/>
+    <Project Path="Tests/Tests.csproj"/>
 </Solution>

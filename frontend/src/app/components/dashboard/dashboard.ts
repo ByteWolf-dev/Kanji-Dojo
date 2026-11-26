@@ -1,27 +1,32 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-
-import { AuthService } from '../../services/auth';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Card } from '../../card/card';
+import { CardService } from '../../services/card';
+import { CardDto } from '../../dtos/card-dto';
 
 @Component({
-  selector: 'app-dashboard',
-  imports: [],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css'
+    selector: 'app-dashboard',
+    imports: [Card],
+    templateUrl: './dashboard.html',
+    styleUrl: './dashboard.css'
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
 
-  private authService = inject(AuthService);
-  private router = inject(Router);
+    private cardService = inject(CardService);
 
-  logout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        console.error('Logout failed');
-      }
-    });
-  }
+    cards = signal<CardDto[]>([]);
+
+    ngOnInit(): void {
+        this.loadCards();
+    }
+
+    loadCards(): void {
+        this.cardService.getCardsDueOnOrBefore().subscribe({
+            next: (cards) => {
+                this.cards.set(cards);
+            },
+            error: (err) => {
+                console.error('Failed to load cards', err);
+            }
+        });
+    }
 }

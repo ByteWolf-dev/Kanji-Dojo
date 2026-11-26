@@ -16,13 +16,13 @@ public class CardMapper : IGenericMapper<CardDto, Card>
             IntervalDays = entity.IntervalDays,
             ItemId = entity.ItemId,
             LastReviewAt = entity.LastReviewAt,
-            UserId = entity.UserId,
+            UserId = entity.UserId
         };
     }
 
     public Card ToEntity(CardDto dto, KanjiDbContext db)
     {
-        return db.Cards.FirstOrDefault(x => x.Id == dto.Id) ?? new Card()
+        return db.Cards.FirstOrDefault(x => x.Id == dto.Id) ?? new Card
         {
             Id = dto.Id,
             CardType = dto.CardType,

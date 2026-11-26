@@ -14,20 +14,20 @@ public class ItemMapper : IGenericMapper<ItemDto, Item>
             CharacterType = entity.CharacterType,
             Meaning = entity.Meaning,
             JlptLevel = entity.JlptLevel,
-            BeltId = entity.BeltId,
+            BeltId = entity.BeltId
         };
     }
 
     public Item ToEntity(ItemDto dto, KanjiDbContext db)
     {
-        return db.Items.FirstOrDefault(x => x.Id == dto.Id) ?? new Item()
+        return db.Items.FirstOrDefault(x => x.Id == dto.Id) ?? new Item
         {
             Id = dto.Id,
             Character = dto.Character,
             CharacterType = dto.CharacterType,
             Meaning = dto.Meaning,
             JlptLevel = dto.JlptLevel,
-            BeltId = dto.BeltId,
+            BeltId = dto.BeltId
         };
     }
 }

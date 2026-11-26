@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -34,9 +35,7 @@ public class AuthController : ControllerBase
 
         if (user == null ||
             string.IsNullOrEmpty(user.PasswordHash))
-        {
             return Unauthorized("Invalid credentials");
-        }
 
         var result = _passwordHasher.VerifyHashedPassword(
             user,
@@ -44,10 +43,7 @@ public class AuthController : ControllerBase
             dto.Password
         );
 
-        if (result == PasswordVerificationResult.Failed)
-        {
-            return Unauthorized("Invalid credentials");
-        }
+        if (result == PasswordVerificationResult.Failed) return Unauthorized("Invalid credentials");
 
         if (result ==
             PasswordVerificationResult.SuccessRehashNeeded)
@@ -60,11 +56,11 @@ public class AuthController : ControllerBase
 
         var claims = new List<Claim>
         {
-            new Claim(
+            new(
                 ClaimTypes.NameIdentifier,
                 user.Id.ToString()),
 
-            new Claim(
+            new(
                 ClaimTypes.Name,
                 user.Name)
         };
@@ -96,8 +92,7 @@ public class AuthController : ControllerBase
         {
             Id = User.FindFirstValue(
                 ClaimTypes.NameIdentifier),
-
-            Name = User.Identity?.Name
+            User.Identity?.Name
         });
     }
 
@@ -111,12 +106,12 @@ public class AuthController : ControllerBase
 
         return Ok();
     }
-    
+
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
-        bool exists = await _context.Users
+        var exists = await _context.Users
             .AnyAsync(u => u.Name == dto.Name);
 
         if (exists)
@@ -143,7 +138,7 @@ public class AuthController : ControllerBase
             user.Name
         });
     }
-    
+
     [AllowAnonymous]
     [HttpGet("csrf")]
     public IActionResult GetCsrfToken(

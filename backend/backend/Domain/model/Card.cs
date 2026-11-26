@@ -3,14 +3,14 @@
 public class Card
 {
     public int Id { get; set; }
-    
+
     public int UserId { get; set; }
     public User User { get; set; }
-    
+
     public int ItemId { get; set; }
     public Item Item { get; set; }
-    
-    
+
+
     public CardType CardType { get; set; }
     public double EaseFactor { get; set; }
     public int IntervalDays { get; set; }

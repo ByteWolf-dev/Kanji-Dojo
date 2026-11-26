@@ -1,5 +1,6 @@
 ﻿using api.Dtos;
 using api.Dtos.model;
+using api.Extensions;
 using Domain.model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,31 +10,43 @@ namespace api.controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class CardController : ControllerBase
 {
-    private KanjiDbContext _kanjiDbContext { get; set; }
-    private IGenericMapper<CardDto, Card> _cardMapper { get; set; }
-    
     public CardController(KanjiDbContext kanjiDbContext, IGenericMapper<CardDto, Card> cardMapper)
     {
         _kanjiDbContext = kanjiDbContext;
         _cardMapper = cardMapper;
     }
 
+    private KanjiDbContext _kanjiDbContext { get; }
+    private IGenericMapper<CardDto, Card> _cardMapper { get; }
+
     [HttpGet]
-    public List<CardDto> GetByUserId(int userId)
+    public async Task<ActionResult<List<CardDto>>> GetMyCards()
     {
-        return _kanjiDbContext.Cards.Where(c => c.UserId == userId).ToList().Select(_cardMapper.ToDto).ToList();
+        var userId = User.GetUserId();
+
+        if (userId == null) return Unauthorized();
+
+        var cards = await _kanjiDbContext.Cards
+            .AsNoTracking()
+            .Where(c => c.UserId == userId)
+            .ToListAsync();
+
+        return Ok(cards.Select(_cardMapper.ToDto).ToList());
     }
 
     [HttpGet("due")]
-    public async Task<ActionResult<List<CardDto>>>
-        GetCardsDueOnOrBefore([FromQuery] DateTime date)
+    public async Task<ActionResult<List<CardDto>>> GetCardsDueOnOrBefore([FromQuery] DateTime date)
     {
+        var userId = User.GetUserId();
+
+        if (userId == null) return Unauthorized();
+
         var cards = await _kanjiDbContext.Cards
             .AsNoTracking()
-            .Where(c => c.DueAt <= date)
+            .Where(c => c.UserId == userId && c.DueAt <= date)
             .OrderBy(c => c.DueAt)
             .ToListAsync();
 

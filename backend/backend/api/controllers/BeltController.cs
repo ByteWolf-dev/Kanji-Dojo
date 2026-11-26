@@ -6,16 +6,16 @@ namespace api.controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class BeltController : ControllerBase
 {
-    private KanjiDbContext _kanjiDbContext { get; set; }
-
     public BeltController(KanjiDbContext kanjiDbContext)
     {
         _kanjiDbContext = kanjiDbContext;
     }
-    
+
+    private KanjiDbContext _kanjiDbContext { get; }
+
     [HttpGet]
     public List<Belt> Get()
     {

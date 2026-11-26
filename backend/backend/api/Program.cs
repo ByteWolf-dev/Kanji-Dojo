@@ -3,9 +3,8 @@ using api.Dtos.Mappers;
 using api.Dtos.model;
 using Domain.model;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace api;
 
@@ -22,7 +21,7 @@ public class Program
         builder.Services.AddScoped<IGenericMapper<ItemDto, Item>, ItemMapper>();
         builder.Services.AddScoped<IGenericMapper<ItemReadingDto, ItemReading>, ItemReadingMapper>();
         builder.Services.AddScoped<IGenericMapper<ReviewDto, Review>, ReviewMapper>();
-        
+
         builder.Services.AddAntiforgery(options =>
         {
             options.HeaderName = "X-XSRF-TOKEN";
@@ -90,10 +89,8 @@ public class Program
         if (args.Contains("--seed"))
         {
             if (!app.Environment.IsDevelopment())
-            {
                 throw new InvalidOperationException(
                     "Database seeding is only allowed in development.");
-            }
 
             using var scope = app.Services.CreateScope();
 

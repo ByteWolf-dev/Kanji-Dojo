@@ -1,7 +1,5 @@
-<h1>Dashboard</h1>
-
-<p>Welcome to Kanji Dojo!</p>
-
-<button (click)="logout()">
-  Logout
-</button>
+@for (card of cards(); track card.id) {
+    <app-card [card]="card" />
+} @empty {
+    <p>No cards due for review.</p>
+}

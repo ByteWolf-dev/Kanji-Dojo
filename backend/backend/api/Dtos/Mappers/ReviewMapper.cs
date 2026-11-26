@@ -7,27 +7,27 @@ public class ReviewMapper : IGenericMapper<ReviewDto, Review>
 {
     public ReviewDto ToDto(Review entity)
     {
-        return new ReviewDto()
+        return new ReviewDto
         {
             Id = entity.Id,
             Answer = entity.Answer,
             CardId = entity.CardId,
             Grade = entity.Grade,
             IsCorrect = entity.IsCorrect,
-            ReviewedAt = entity.ReviewedAt,
+            ReviewedAt = entity.ReviewedAt
         };
     }
 
     public Review ToEntity(ReviewDto dto, KanjiDbContext db)
     {
-        return db.Reviews.FirstOrDefault(x => x.Id == dto.Id) ?? new Review()
+        return db.Reviews.FirstOrDefault(x => x.Id == dto.Id) ?? new Review
         {
             Id = dto.Id,
-            Answer = dto.Answer,
+            Answer = dto.Answer ?? string.Empty,
             CardId = dto.CardId,
             Grade = dto.Grade,
             IsCorrect = dto.IsCorrect,
-            ReviewedAt = dto.ReviewedAt,
+            ReviewedAt = dto.ReviewedAt
         };
     }
 }

@@ -77,12 +77,10 @@ public static class DatabaseSeeder
             }).ToList();
 
         foreach (var user in users)
-        {
             user.PasswordHash = hasher.HashPassword(
                 user,
                 "TestPassword123!"
             );
-        }
 
         db.Users.AddRange(users);
         await db.SaveChangesAsync();
@@ -132,7 +130,7 @@ public static class DatabaseSeeder
         var items = new List<Item>();
         var readings = new List<ItemReading>();
 
-        for (int i = 0; i < hiragana.Length; i++)
+        for (var i = 0; i < hiragana.Length; i++)
         {
             var item = new Item
             {
@@ -152,7 +150,7 @@ public static class DatabaseSeeder
             });
         }
 
-        for (int i = 0; i < katakana.Length; i++)
+        for (var i = 0; i < katakana.Length; i++)
         {
             var item = new Item
             {
@@ -249,7 +247,6 @@ public static class DatabaseSeeder
                 .Take(150);
 
             foreach (var entry in availableCards)
-            {
                 cards.Add(new Card
                 {
                     UserId = user.Id,
@@ -260,7 +257,6 @@ public static class DatabaseSeeder
                     Repetitions = 0,
                     DueAt = now.AddDays(-random.Next(0, 31))
                 });
-            }
         }
 
         db.Cards.AddRange(cards);
@@ -278,20 +274,20 @@ public static class DatabaseSeeder
         {
             var item = itemsById[card.ItemId];
 
-            int reviewCount = random.Next(0, 7);
+            var reviewCount = random.Next(0, 7);
 
-            DateTime reviewDate = card.DueAt;
+            var reviewDate = card.DueAt;
 
-            for (int i = 0; i < reviewCount; i++)
+            for (var i = 0; i < reviewCount; i++)
             {
                 if (reviewDate > now)
                     break;
 
-                int grade = random.Next(0, 6);
+                var grade = random.Next(0, 6);
 
-                bool isCorrect = grade >= 3;
+                var isCorrect = grade >= 3;
 
-                string correctAnswer = card.CardType switch
+                var correctAnswer = card.CardType switch
                 {
                     CardType.Writing => item.Character,
                     CardType.Meaning => item.Meaning ?? item.Character,

@@ -13,19 +13,19 @@ public class ItemReadingMapper : IGenericMapper<ItemReadingDto, ItemReading>
             ItemId = entity.ItemId,
             Pronunciation = entity.Pronunciation,
             ReadingKana = entity.ReadingKana,
-            ReadingRomaji = entity.ReadingRomaji,
+            ReadingRomaji = entity.ReadingRomaji
         };
     }
 
     public ItemReading ToEntity(ItemReadingDto dto, KanjiDbContext db)
     {
-        return db.ItemReadings.FirstOrDefault(x => x.Id == dto.ItemId) ?? new ItemReading()
+        return db.ItemReadings.FirstOrDefault(x => x.Id == dto.ItemId) ?? new ItemReading
         {
             Id = dto.ItemId,
             ItemId = dto.ItemId,
             Pronunciation = dto.Pronunciation,
             ReadingKana = dto.ReadingKana,
-            ReadingRomaji = dto.ReadingRomaji,
+            ReadingRomaji = dto.ReadingRomaji
         };
     }
 }

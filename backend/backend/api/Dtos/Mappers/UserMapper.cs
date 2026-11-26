@@ -9,7 +9,7 @@ public class UserMapper : IGenericMapper<UserDto, User>
     {
         return new UserDto
         {
-            UserId =  entity.Id,
+            UserId = entity.Id,
             Name = entity.Name,
             BeltId = entity.BeltId
         };

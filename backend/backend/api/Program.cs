@@ -1,10 +1,11 @@
-using api.Dtos;
+﻿using api.Dtos;
 using api.Dtos.Mappers;
 using api.Dtos.model;
 using Domain.model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace api;
 
@@ -14,7 +15,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<KanjiDbContext>();
+        builder.Services.AddDbContext<KanjiDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("KanjiDb")));
 
         builder.Services.AddScoped<IGenericMapper<UserDto, User>, UserMapper>();
         builder.Services.AddScoped<IGenericMapper<CardDto, Card>, CardMapper>();
@@ -102,13 +104,24 @@ public class Program
             return;
         }
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider
+                .GetRequiredService<KanjiDbContext>();
+
+            await db.Database.MigrateAsync();
+
+            if (!await db.Belts.AnyAsync())
+                await DatabaseSeeder.SeedAsync(db);
+        }
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            // in docker https is handled by the cloudflare tunnel
+            app.UseHttpsRedirection();
         }
-
-        app.UseHttpsRedirection();
 
         app.UseCors("Frontend");
 

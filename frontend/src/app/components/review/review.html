@@ -1,0 +1,82 @@
+@if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+} @else if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+    <a mat-button routerLink="/dashboard">Back</a>
+} @else if (isFinished()) {
+    <mat-card class="review">
+        <mat-card-content>
+            @if (cards().length) {
+                <h2>Session done!</h2>
+                <p>{{ correctCount() }} / {{ cards().length }} correct</p>
+            } @else {
+                <h2>Nothing to review right now.</h2>
+                <p>Come back later.</p>
+            }
+        </mat-card-content>
+        <mat-card-actions>
+            <a mat-flat-button routerLink="/dashboard">Back to the dojo</a>
+        </mat-card-actions>
+    </mat-card>
+} @else {
+    <mat-progress-bar mode="determinate" [value]="progress()" />
+
+    <mat-card class="review">
+        <mat-card-content>
+            <p class="counter">{{ index() + 1 }} / {{ cards().length }}</p>
+            <p class="hint">{{ hint() }}</p>
+            <div class="question" [class.small]="question().length > 2">{{ question() }}</div>
+
+            @if (card().cardType === CardType.Writing) {
+                <div class="options">
+                    @for (option of options(); track option) {
+                        <button
+                            mat-stroked-button
+                            class="option"
+                            [class.correct]="result() && option === item()?.character"
+                            [class.wrong]="result() === 'wrong' && option === answer()"
+                            [disabled]="result() !== null"
+                            (click)="check(option)"
+                        >
+                            {{ option }}
+                        </button>
+                    }
+                </div>
+            }
+
+            <form (submit)="$event.preventDefault(); submit()">
+                @if (card().cardType !== CardType.Writing) {
+                    <mat-form-field class="answer" appearance="outline">
+                        <mat-label>Answer</mat-label>
+                        <input
+                            matInput
+                            autocomplete="off"
+                            [value]="answer()"
+                            [readonly]="result() !== null"
+                            (input)="onInput($event)"
+                        />
+                    </mat-form-field>
+                }
+
+                @if (result()) {
+                    <p class="result" [class.wrong]="result() === 'wrong'">
+                        {{ result() === 'correct' ? 'Correct!' : 'Wrong.' }}
+                        Answer: {{ solution() }}
+                    </p>
+
+                    <div class="grades">
+                        @if (result() === 'correct') {
+                            <button mat-stroked-button type="button" (click)="grade(3)">Hard</button>
+                            <button mat-flat-button type="submit">Good</button>
+                            <button mat-stroked-button type="button" (click)="grade(5)">Easy</button>
+                        } @else {
+                            <button mat-flat-button type="submit">Next</button>
+                        }
+                    </div>
+                } @else if (card().cardType !== CardType.Writing) {
+                    <button mat-flat-button type="submit">Check</button>
+                }
+            </form>
+        </mat-card-content>
+    </mat-card>
+}

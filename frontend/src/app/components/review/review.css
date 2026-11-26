@@ -1,0 +1,61 @@
+.review {
+    max-width: 480px;
+    margin: 32px auto;
+    text-align: center;
+}
+
+.counter,
+.hint {
+    color: #666;
+    margin: 4px 0;
+}
+
+.question {
+    font-size: 96px;
+    line-height: 1.3;
+    margin: 16px 0;
+}
+
+.question.small {
+    font-size: 40px;
+}
+
+.answer {
+    width: 100%;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.option {
+    font-size: 32px;
+    height: 72px;
+}
+
+.option.correct {
+    background: #dcfce7;
+}
+
+.option.wrong {
+    background: #fee2e2;
+}
+
+.result {
+    color: #15803d;
+    font-weight: 500;
+}
+
+.result.wrong,
+.error {
+    color: #b91c1c;
+}
+
+.grades {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}

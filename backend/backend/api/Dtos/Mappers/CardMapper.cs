@@ -14,6 +14,7 @@ public class CardMapper : IGenericMapper<CardDto, Card>
             DueAt = entity.DueAt,
             EaseFactor = entity.EaseFactor,
             IntervalDays = entity.IntervalDays,
+            Repetitions = entity.Repetitions,
             ItemId = entity.ItemId,
             LastReviewAt = entity.LastReviewAt,
             UserId = entity.UserId
@@ -29,6 +30,7 @@ public class CardMapper : IGenericMapper<CardDto, Card>
             DueAt = dto.DueAt,
             EaseFactor = dto.EaseFactor,
             IntervalDays = dto.IntervalDays,
+            Repetitions = dto.Repetitions,
             ItemId = dto.ItemId,
             LastReviewAt = dto.LastReviewAt,
             UserId = dto.UserId

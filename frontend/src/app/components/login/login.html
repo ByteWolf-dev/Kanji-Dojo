@@ -1,36 +1,48 @@
-<h1>Kanji Dojo</h1>
+<mat-card class="login">
+  <mat-card-header>
+    <mat-card-title>Kanji Dojo</mat-card-title>
+    <mat-card-subtitle>漢字道場</mat-card-subtitle>
+  </mat-card-header>
 
-<form #loginForm="ngForm" (ngSubmit)="login()">
+  <mat-card-content>
+    <form #loginForm="ngForm" (ngSubmit)="login()">
 
-  <label>Username</label>
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          type="text"
+          name="username"
+          [(ngModel)]="credentials.name"
+          autocomplete="username"
+          required
+        />
+      </mat-form-field>
 
-  <input
-    type="text"
-    name="username"
-    [(ngModel)]="credentials.name"
-    autocomplete="username"
-    required
-  />
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          type="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          autocomplete="current-password"
+          required
+        />
+      </mat-form-field>
 
-  <label>Password</label>
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
 
-  <input
-    type="password"
-    name="password"
-    [(ngModel)]="credentials.password"
-    autocomplete="current-password"
-    required
-  />
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="isLoading() || loginForm.invalid"
+      >
+        {{ isLoading() ? 'Logging in...' : 'Login' }}
+      </button>
 
-  @if (errorMessage()) {
-    <p>{{ errorMessage() }}</p>
-  }
-
-  <button
-    type="submit"
-    [disabled]="isLoading() || loginForm.invalid"
-  >
-    {{ isLoading() ? 'Logging in...' : 'Login' }}
-  </button>
-
-</form>
+    </form>
+  </mat-card-content>
+</mat-card>

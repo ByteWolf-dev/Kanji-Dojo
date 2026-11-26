@@ -1,0 +1,17 @@
+.spacer {
+    flex: 1;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 0 16px;
+}
+
+.due {
+    font-size: 48px;
+    margin: 8px 0 0;
+}

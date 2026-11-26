@@ -1,0 +1,14 @@
+.login {
+  max-width: 360px;
+  margin: 80px auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.error {
+  color: #b91c1c;
+}

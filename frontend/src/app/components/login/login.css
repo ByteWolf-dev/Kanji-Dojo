@@ -12,3 +12,8 @@ form {
 .error {
   color: #b91c1c;
 }
+
+.demo {
+  margin-top: 16px;
+  color: #666;
+}

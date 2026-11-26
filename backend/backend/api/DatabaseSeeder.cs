@@ -77,6 +77,9 @@ public static class DatabaseSeeder
                 BeltId = belts[index % belts.Length].Id
             }).ToList();
 
+        var demo = users.Single(u => u.Name == "demo");
+        demo.BeltId = belts[1].Id;
+
         foreach (var user in users)
             user.PasswordHash = hasher.HashPassword(
                 user,
@@ -171,55 +174,120 @@ public static class DatabaseSeeder
             });
         }
 
-        var kanji = new[]
+        // JLPT N5 kanji, readings and meanings from KANJIDIC2 (EDRDG, CC BY-SA 4.0)
+        // the first half is the green belt, the second half the blue belt
+        var kanji = new (string Character, string Meaning, string? KunKana, string? KunRomaji, string OnKana, string OnRomaji)[]
         {
-            ("水", "Water", "みず", "mizu", "スイ", "sui"),
-            ("火", "Fire", "ひ", "hi", "カ", "ka"),
-            ("木", "Tree", "き", "ki", "モク", "moku"),
-            ("金", "Gold", "かね", "kane", "キン", "kin"),
-            ("土", "Earth", "つち", "tsuchi", "ド", "do"),
-            ("日", "Sun", "ひ", "hi", "ニチ", "nichi"),
-            ("月", "Moon", "つき", "tsuki", "ゲツ", "getsu"),
-            ("山", "Mountain", "やま", "yama", "サン", "san"),
-            ("川", "River", "かわ", "kawa", "セン", "sen"),
-            ("人", "Person", "ひと", "hito", "ジン", "jin"),
-            ("口", "Mouth", "くち", "kuchi", "コウ", "kou"),
-            ("目", "Eye", "め", "me", "モク", "moku"),
-            ("耳", "Ear", "みみ", "mimi", "ジ", "ji"),
-            ("手", "Hand", "て", "te", "シュ", "shu"),
-            ("足", "Foot", "あし", "ashi", "ソク", "soku"),
-            ("雨", "Rain", "あめ", "ame", "ウ", "u"),
-            ("空", "Sky", "そら", "sora", "クウ", "kuu"),
-            ("花", "Flower", "はな", "hana", "カ", "ka"),
-            ("犬", "Dog", "いぬ", "inu", "ケン", "ken"),
-            ("猫", "Cat", "ねこ", "neko", "ビョウ", "byou")
+            ("一", "one", "ひと", "hito", "イチ", "ichi"),
+            ("二", "two", "ふた", "futa", "ニ", "ni"),
+            ("三", "three", "み", "mi", "サン", "san"),
+            ("四", "four", "よん", "yon", "シ", "shi"),
+            ("五", "five", "いつ", "itsu", "ゴ", "go"),
+            ("六", "six", "む", "mu", "ロク", "roku"),
+            ("七", "seven", "なな", "nana", "シチ", "shichi"),
+            ("八", "eight", "や", "ya", "ハチ", "hachi"),
+            ("九", "nine", "ここの", "kokono", "キュウ", "kyuu"),
+            ("十", "ten", "とお", "too", "ジュウ", "juu"),
+            ("百", "hundred", null, null, "ヒャク", "hyaku"),
+            ("千", "thousand", "ち", "chi", "セン", "sen"),
+            ("万", "ten thousand", null, null, "マン", "man"),
+            ("円", "yen, circle", "まる", "maru", "エン", "en"),
+            ("日", "day, sun", "ひ", "hi", "ニチ", "nichi"),
+            ("月", "month, moon", "つき", "tsuki", "ゲツ", "getsu"),
+            ("火", "fire", "ひ", "hi", "カ", "ka"),
+            ("水", "water", "みず", "mizu", "スイ", "sui"),
+            ("木", "tree, wood", "き", "ki", "モク", "moku"),
+            ("金", "gold, money", "かね", "kane", "キン", "kin"),
+            ("土", "earth, soil", "つち", "tsuchi", "ド", "do"),
+            ("年", "year", "とし", "toshi", "ネン", "nen"),
+            ("時", "time, hour", "とき", "toki", "ジ", "ji"),
+            ("今", "now", "いま", "ima", "コン", "kon"),
+            ("午", "noon", null, null, "ゴ", "go"),
+            ("半", "half", "なか", "naka", "ハン", "han"),
+            ("人", "person", "ひと", "hito", "ジン", "jin"),
+            ("男", "man", "おとこ", "otoko", "ダン", "dan"),
+            ("女", "woman", "おんな", "onna", "ジョ", "jo"),
+            ("子", "child", "こ", "ko", "シ", "shi"),
+            ("父", "father", "ちち", "chichi", "フ", "fu"),
+            ("母", "mother", "はは", "haha", "ボ", "bo"),
+            ("友", "friend", "とも", "tomo", "ユウ", "yuu"),
+            ("山", "mountain", "やま", "yama", "サン", "san"),
+            ("川", "river", "かわ", "kawa", "セン", "sen"),
+            ("天", "heaven, sky", "あま", "ama", "テン", "ten"),
+            ("雨", "rain", "あめ", "ame", "ウ", "u"),
+            ("気", "spirit, air", null, null, "キ", "ki"),
+            ("白", "white", "しろ", "shiro", "ハク", "haku"),
+            ("名", "name", "な", "na", "メイ", "mei"),
+            ("上", "up, above", "うえ", "ue", "ジョウ", "jou"),
+            ("下", "down, below", "した", "shita", "カ", "ka"),
+            ("中", "inside, middle", "なか", "naka", "チュウ", "chuu"),
+            ("外", "outside", "そと", "soto", "ガイ", "gai"),
+            ("右", "right", "みぎ", "migi", "ウ", "u"),
+            ("左", "left", "ひだり", "hidari", "サ", "sa"),
+            ("前", "before, front", "まえ", "mae", "ゼン", "zen"),
+            ("後", "after, behind", "あと", "ato", "ゴ", "go"),
+            ("間", "interval, between", "あいだ", "aida", "カン", "kan"),
+            ("東", "east", "ひがし", "higashi", "トウ", "tou"),
+            ("西", "west", "にし", "nishi", "セイ", "sei"),
+            ("南", "south", "みなみ", "minami", "ナン", "nan"),
+            ("北", "north", "きた", "kita", "ホク", "hoku"),
+            ("大", "big", "おお", "oo", "ダイ", "dai"),
+            ("小", "small", "ちい", "chii", "ショウ", "shou"),
+            ("長", "long", "なが", "naga", "チョウ", "chou"),
+            ("高", "tall, expensive", "たか", "taka", "コウ", "kou"),
+            ("先", "ahead, previous", "さき", "saki", "セン", "sen"),
+            ("毎", "every", null, null, "マイ", "mai"),
+            ("何", "what", "なに", "nani", "カ", "ka"),
+            ("本", "book, origin", "もと", "moto", "ホン", "hon"),
+            ("国", "country", "くに", "kuni", "コク", "koku"),
+            ("学", "study, learning", "まな", "mana", "ガク", "gaku"),
+            ("校", "school", null, null, "コウ", "kou"),
+            ("生", "life, birth", "い", "i", "セイ", "sei"),
+            ("語", "word, language", "かた", "kata", "ゴ", "go"),
+            ("電", "electricity", null, null, "デン", "den"),
+            ("車", "car", "くるま", "kuruma", "シャ", "sha"),
+            ("行", "go", "い", "i", "コウ", "kou"),
+            ("来", "come", "く", "ku", "ライ", "rai"),
+            ("出", "exit, go out", "で", "de", "シュツ", "shutsu"),
+            ("入", "enter", "はい", "hai", "ニュウ", "nyuu"),
+            ("見", "see", "み", "mi", "ケン", "ken"),
+            ("聞", "hear, ask", "き", "ki", "ブン", "bun"),
+            ("話", "talk, story", "はなし", "hanashi", "ワ", "wa"),
+            ("読", "read", "よ", "yo", "ドク", "doku"),
+            ("書", "write", "か", "ka", "ショ", "sho"),
+            ("食", "eat, food", "た", "ta", "ショク", "shoku"),
+            ("休", "rest", "やす", "yasu", "キュウ", "kyuu")
         };
 
-        foreach (var entry in kanji)
+        for (var i = 0; i < kanji.Length; i++)
         {
+            var entry = kanji[i];
+
             var item = new Item
             {
-                Character = entry.Item1,
-                Meaning = entry.Item2,
+                Character = entry.Character,
+                Meaning = entry.Meaning,
                 CharacterType = CharacterType.Kanji,
-                BeltId = belts[2].Id
+                JlptLevel = 5,
+                BeltId = i < kanji.Length / 2 ? belts[2].Id : belts[3].Id
             };
 
             items.Add(item);
 
-            readings.Add(new ItemReading
-            {
-                Item = item,
-                ReadingKana = entry.Item3,
-                ReadingRomaji = entry.Item4,
-                Pronunciation = Pronunciation.KunYomi
-            });
+            if (entry.KunKana != null && entry.KunRomaji != null)
+                readings.Add(new ItemReading
+                {
+                    Item = item,
+                    ReadingKana = entry.KunKana,
+                    ReadingRomaji = entry.KunRomaji,
+                    Pronunciation = Pronunciation.KunYomi
+                });
 
             readings.Add(new ItemReading
             {
                 Item = item,
-                ReadingKana = entry.Item5,
-                ReadingRomaji = entry.Item6,
+                ReadingKana = entry.OnKana,
+                ReadingRomaji = entry.OnRomaji,
                 Pronunciation = Pronunciation.OnYomi
             });
         }
@@ -292,38 +360,31 @@ public static class DatabaseSeeder
                         : "unknown"
                 });
 
-                if (grade >= 3)
-                {
-                    card.IntervalDays = card.Repetitions switch
-                    {
-                        0 => 1,
-                        1 => 6,
-                        _ => (int)Math.Ceiling(
-                            card.IntervalDays * card.EaseFactor)
-                    };
-
-                    card.Repetitions++;
-                }
-                else
-                {
-                    card.Repetitions = 0;
-                    card.IntervalDays = 1;
-                }
-
-                card.EaseFactor = Math.Max(
-                    1.3,
-                    card.EaseFactor + 0.1 -
-                    (5 - grade) *
-                    (0.08 + (5 - grade) * 0.02)
-                );
-
-                card.LastReviewAt = reviewDate;
-
-                card.DueAt = reviewDate.AddDays(
-                    card.IntervalDays
-                );
+                SchedulingAlgorithms.Review(card, grade, reviewDate);
 
                 reviewDate = card.DueAt;
+            }
+        }
+
+        // demo account: reviews on each of the last 14 days so it has a streak
+        var demoCards = cards.Where(c => c.UserId == demo.Id).ToList();
+
+        for (var day = 1; day <= 14; day++)
+        {
+            var date = now.Date.AddDays(-day).AddHours(random.Next(8, 20));
+
+            foreach (var card in demoCards.OrderBy(_ => random.Next()).Take(random.Next(15, 25)))
+            {
+                var grade = random.Next(0, 10) < 9 ? random.Next(3, 6) : random.Next(0, 3);
+
+                reviews.Add(new Review
+                {
+                    CardId = card.Id,
+                    ReviewedAt = date,
+                    Grade = grade,
+                    IsCorrect = grade >= 3,
+                    Answer = grade >= 3 ? itemsById[card.ItemId].Character : "unknown"
+                });
             }
         }
 

@@ -44,5 +44,14 @@
       </button>
 
     </form>
+
+    <p class="demo">
+      Just looking around?
+      <button mat-button type="button" (click)="loginAsDemo()" [disabled]="isLoading()">Try the demo</button>
+    </p>
   </mat-card-content>
+
+  <mat-card-actions>
+    <a mat-button routerLink="/about">About</a>
+  </mat-card-actions>
 </mat-card>
